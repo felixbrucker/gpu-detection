@@ -1,6 +1,6 @@
 {
   "name": "gpu-detection",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "main": "lib/index.js",
   "author": "Felix Brucker",
@@ -29,5 +29,8 @@
     "package_name": "{platform}-{arch}.tar.gz",
     "host": "https://github.com/felixbrucker/gpu-detection/releases/download/",
     "pkg_path": "."
+  },
+  "engines": {
+    "node": ">= 10"
   }
 }
