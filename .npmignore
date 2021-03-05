@@ -8,4 +8,5 @@ build
 .idea
 
 build-package.js
+rename-native-module.js
 .github

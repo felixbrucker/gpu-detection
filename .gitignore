@@ -1,5 +1,5 @@
 native/target
-native/index.node
+native/gpu-detection.node
 native/artifacts.json
 **/*~
 **/node_modules
