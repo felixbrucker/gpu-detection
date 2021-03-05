@@ -1,6 +1,6 @@
 {
   "name": "gpu-detection",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "",
   "main": "lib/index.js",
   "author": "Felix Brucker",
@@ -16,8 +16,8 @@
   "scripts": {
     "install": "npm run --silent install:download || npm run --silent build || exit 0",
     "install:download": "node-pre-gyp install --fallback-to-build=false",
-    "build": "neon build --release && node ./rename-native-module.js",
-    "package": "yarn run build && node ./build-package.js"
+    "build": "neon build --release && node ./bin/rename-native-module.js",
+    "package": "yarn run build && node ./bin/build-package.js"
   },
   "devDependencies": {
     "archiver": "^5.2.0",

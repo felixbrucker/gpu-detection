@@ -7,6 +7,5 @@ native/artifacts.json
 build
 .idea
 
-build-package.js
-rename-native-module.js
+bin/build-package.js
 .github
