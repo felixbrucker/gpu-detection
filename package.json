@@ -1,6 +1,6 @@
 {
   "name": "gpu-detection",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "",
   "main": "lib/index.js",
   "author": "Felix Brucker",
@@ -14,7 +14,7 @@
     "node-pre-gyp": "^0.17.0"
   },
   "scripts": {
-    "install": "node-pre-gyp install --fallback-to-build=false || npm run build",
+    "install": "node-pre-gyp install --fallback-to-build=false || npm run build || (true || (exit 0))",
     "build": "neon build --release",
     "package": "yarn run build && node ./build-package.js"
   },
