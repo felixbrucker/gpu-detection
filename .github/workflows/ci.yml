@@ -33,6 +33,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: yarn install
         run: yarn install
+      - name: Package build archive
+        run: yarn run package
       - name: Save build archive
         uses: actions/upload-artifact@v2
         with:
