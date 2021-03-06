@@ -41,13 +41,14 @@ fn get_platform_info(mut cx: FunctionContext) -> JsResult<JsArray> {
             let js_device_cores = cx.number(get_cores(*device_id) as f64);
             let js_device_memory = cx.string(get_memory(*device_id).to_string());
 
-            let js_device_name;
+            let mut js_device_name = cx.string(&device_name);
             if vendor.contains("AMD") || vendor.contains("Advanced Micro Devices") {
-                let device_name_amd = get_amd_name(*device_id);
-                let combined_name = format!("{} ({})", device_name_amd, device_name);
-                js_device_name = cx.string(&combined_name);
-            } else {
-                js_device_name = cx.string(&device_name);
+                let extensions = to_string!(core::get_device_info(*device_id, DeviceInfo::Extensions));
+                if extensions.contains("cl_amd_device_attribute_query") {
+                    let device_name_amd = get_amd_name(*device_id);
+                    let combined_name = format!("{} ({})", device_name_amd, device_name);
+                    js_device_name = cx.string(&combined_name);
+                }
             }
 
             device_info.set(&mut cx, "id", js_device_id).unwrap();
