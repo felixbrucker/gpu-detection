@@ -43,7 +43,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
-      - name: Download build archives
+      - name: Fetch build archives
         uses: actions/download-artifact@v2
       - uses: ncipollo/release-action@v1
         with:
