@@ -122,15 +122,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f6503fe142514ca4799d4c26297c4248239fe8838d827db6bd6065c6ed29a6ce"
 
 [[package]]
-name = "gpu-detection"
-version = "0.1.0"
-dependencies = [
- "fil-ocl-core",
- "neon",
- "neon-build",
-]
-
-[[package]]
 name = "libc"
 version = "0.2.87"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -297,6 +288,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b4072920739958adeec5abedec51af70febc58f7fff0601aaa0827c1f3c8fefd"
 dependencies = [
  "num",
+]
+
+[[package]]
+name = "opencl-info"
+version = "0.1.0"
+dependencies = [
+ "fil-ocl-core",
+ "neon",
+ "neon-build",
 ]
 
 [[package]]

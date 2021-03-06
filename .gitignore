@@ -1,5 +1,5 @@
 native/target
-native/gpu-detection.node
+native/opencl-info.node
 native/artifacts.json
 **/*~
 **/node_modules

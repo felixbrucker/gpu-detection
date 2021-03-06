@@ -5,7 +5,7 @@ const archiver = require('archiver');
 
 (async () => {
   const buildDir = join(__dirname, '..', 'build');
-  const nativeModulePathInZip = join('native', 'gpu-detection.node');
+  const nativeModulePathInZip = join('native', 'opencl-info.node');
   const nativeModulePath = join(__dirname, '..', nativeModulePathInZip);
   mkdirp.sync(buildDir);
   const zipFileStream = createWriteStream(join(buildDir, `${process.platform}-${process.arch}.tar.gz`));

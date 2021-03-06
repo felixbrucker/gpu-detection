@@ -1,14 +1,14 @@
 [package]
-name = "gpu-detection"
+name = "opencl-info"
 version = "0.1.0"
 authors = ["Felix Brucker <felix@felixbrucker.com>"]
 license = "MIT"
 build = "build.rs"
 edition = "2018"
-exclude = ["artifacts.json", "gpu-detection.node"]
+exclude = ["artifacts.json", "opencl-info.node"]
 
 [lib]
-name = "gpu_detection"
+name = "opencl_info"
 crate-type = ["dylib"]
 
 [build-dependencies]

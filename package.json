@@ -1,5 +1,5 @@
 {
-  "name": "gpu-detection",
+  "name": "opencl-info",
   "version": "0.1.5",
   "description": "",
   "main": "lib/index.js",
@@ -7,7 +7,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/felixbrucker/gpu-detection.git"
+    "url": "git+https://github.com/felixbrucker/opencl-info.git"
   },
   "dependencies": {
     "neon-cli": "^0.7.1",
@@ -24,11 +24,11 @@
     "mkdirp": "^1.0.4"
   },
   "binary": {
-    "module_name": "gpu-detection",
+    "module_name": "opencl-info",
     "module_path": "./native/",
     "remote_path": "{version}",
     "package_name": "{platform}-{arch}.tar.gz",
-    "host": "https://github.com/felixbrucker/gpu-detection/releases/download/",
+    "host": "https://github.com/felixbrucker/opencl-info/releases/download/",
     "pkg_path": "."
   },
   "engines": {
