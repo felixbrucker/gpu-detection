@@ -12,19 +12,15 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Install dependencies
+      - name: Install ubuntu dependencies
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get -qq update
           sudo apt-get install -y opencl-headers ocl-icd-opencl-dev
-          # Install OpenCL (CPU) runtime
-          # https://software.intel.com/en-us/articles/opencl-drivers#latest_CPU_runtime
-          PACKAGE_URL=http://registrationcenter-download.intel.com/akdlm/irc_nas/12556/opencl_runtime_16.1.2_x64_rh_6.4.0.37.tgz
-          PACKAGE_NAME=opencl_runtime_16.1.2_x64_rh_6.4.0.37
-          wget -q ${PACKAGE_URL} -O /tmp/opencl_runtime.tgz
-          tar -xzf /tmp/opencl_runtime.tgz -C /tmp
-          sed 's/decline/accept/g' -i /tmp/${PACKAGE_NAME}/silent.cfg
-          sudo /tmp/${PACKAGE_NAME}/install.sh -s /tmp/${PACKAGE_NAME}/silent.cfg
+      - name: Install windows dependencies
+        if: matrix.os == 'windows-latest'
+        run: |
+          echo test
       - name: Checkout the repo
         uses: actions/checkout@v2
       - name: Set up Rust
@@ -37,10 +33,29 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: yarn install
         run: yarn install
+      - name: Save build archive
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-archive-{{matrix.os}}
+          path: build/*.tar.gz
 
-  publish:
-    name: Publish to npm
+  publish-release:
+    name: Publish release
     needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build archives
+        uses: actions/download-artifact@v2
+    - uses: ncipollo/release-action@v1
+      with:
+        artifacts: "build/*.tar.gz"
+        omitBody: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-to-npm:
+    name: Publish to npm
+    needs: publish-release
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
