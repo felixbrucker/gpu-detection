@@ -38,7 +38,7 @@ jobs:
       - name: Save build archive
         uses: actions/upload-artifact@v2
         with:
-          name: build-archive-{{matrix.os}}
+          name: build-archive-${{ matrix.os }}
           path: build/*.tar.gz
 
   publish-release:
