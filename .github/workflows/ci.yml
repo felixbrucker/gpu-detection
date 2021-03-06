@@ -47,11 +47,11 @@ jobs:
     steps:
       - name: Download build archives
         uses: actions/download-artifact@v2
-    - uses: ncipollo/release-action@v1
-      with:
-        artifacts: "build/*.tar.gz"
-        omitBody: true
-        token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/*.tar.gz"
+          omitBody: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   publish-to-npm:
     name: Publish to npm
