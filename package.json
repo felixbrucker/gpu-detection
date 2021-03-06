@@ -3,6 +3,7 @@
   "version": "0.1.7",
   "description": "",
   "main": "lib/index.js",
+  "exports": "./lib/index.js",
   "author": "Felix Brucker",
   "license": "MIT",
   "repository": {
