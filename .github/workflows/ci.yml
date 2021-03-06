@@ -5,13 +5,18 @@ jobs:
   build:
     name: Build
     strategy:
+      fail-fast: false
       matrix:
         node-version: [ 12.x ]
-        os: [ macos-latest, windows-latest ]
+        os: [ ubuntu-latest, macos-latest ]
 
     runs-on: ${{ matrix.os }}
-
     steps:
+      - name: Install ubuntu dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get -qq update
+          sudo apt-get install -y opencl-headers ocl-icd-opencl-dev
       - name: Checkout the repo
         uses: actions/checkout@v2
       - name: Set up Rust
@@ -24,10 +29,31 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: yarn install
         run: yarn install
+      - name: Package build archive
+        run: yarn run package
+      - name: Save build archive
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-archive-${{ matrix.os }}
+          path: build/*.tar.gz
 
-  publish:
-    name: Publish to npm
+  publish-release:
+    name: Publish release
     needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch build archives
+        uses: actions/download-artifact@v2
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/*.tar.gz"
+          omitBody: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-to-npm:
+    name: Publish to npm
+    needs: publish-release
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
