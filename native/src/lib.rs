@@ -35,11 +35,15 @@ fn get_platform_info(mut cx: FunctionContext) -> JsResult<JsArray> {
             let js_device_id = cx.number(j as f64);
             let js_device_name = cx.string(&to_string!(core::get_device_info(device_id, DeviceInfo::Name)));
             let js_device_vendor = cx.string(&to_string!(core::get_device_info(device_id, DeviceInfo::Vendor)));
+            let js_device_type = cx.string(&to_string!(core::get_device_info(device_id, DeviceInfo::Type)));
             let js_device_cores = cx.number(get_cores(*device_id) as f64);
+            let js_device_memory = cx.string(get_memory(*device_id).to_string());
             device_info.set(&mut cx, "id", js_device_id).unwrap();
             device_info.set(&mut cx, "name", js_device_name).unwrap();
             device_info.set(&mut cx, "vendor", js_device_vendor).unwrap();
+            device_info.set(&mut cx, "type", js_device_type).unwrap();
             device_info.set(&mut cx, "cores", js_device_cores).unwrap();
+            device_info.set(&mut cx, "memory", js_device_memory).unwrap();
 
             device_infos.push(device_info);
         }
@@ -59,16 +63,16 @@ fn get_platform_info(mut cx: FunctionContext) -> JsResult<JsArray> {
     Ok(js_platform_infos)
 }
 
-// fn get_kernel_work_group_size(x: &core::Kernel, y: core::DeviceId) -> usize {
-//     match core::get_kernel_work_group_info(x, y, KernelWorkGroupInfo::WorkGroupSize).unwrap() {
-//         core::KernelWorkGroupInfoResult::WorkGroupSize(kws) => kws,
-//         _ => panic!("Unexpected error"),
-//     }
-// }
-
 fn get_cores(device: core::DeviceId) -> u32 {
     match core::get_device_info(device, DeviceInfo::MaxComputeUnits).unwrap() {
         core::DeviceInfoResult::MaxComputeUnits(mcu) => mcu,
+        _ => panic!("Unexpected error"),
+    }
+}
+
+fn get_memory(device: core::DeviceId) -> u64 {
+    match core::get_device_info(device, DeviceInfo::GlobalMemSize).unwrap() {
+        core::DeviceInfoResult::GlobalMemSize(mem) => mem,
         _ => panic!("Unexpected error"),
     }
 }
