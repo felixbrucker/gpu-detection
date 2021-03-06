@@ -1,6 +1,7 @@
 extern crate fil_ocl_core as core;
 
 use crate::core::{ DeviceInfo, PlatformInfo, Status };
+use crate::core::util;
 use neon::prelude::*;
 
 // convert the info or error to a string
@@ -33,11 +34,22 @@ fn get_platform_info(mut cx: FunctionContext) -> JsResult<JsArray> {
         for (j, device_id) in device_ids.iter().enumerate() {
             let device_info = JsObject::new(&mut cx);
             let js_device_id = cx.number(j as f64);
-            let js_device_name = cx.string(&to_string!(core::get_device_info(device_id, DeviceInfo::Name)));
-            let js_device_vendor = cx.string(&to_string!(core::get_device_info(device_id, DeviceInfo::Vendor)));
+            let device_name = to_string!(core::get_device_info(device_id, DeviceInfo::Name));
+            let vendor = to_string!(core::get_device_info(device_id, DeviceInfo::Vendor));
+            let js_device_vendor = cx.string(&vendor);
             let js_device_type = cx.string(&to_string!(core::get_device_info(device_id, DeviceInfo::Type)));
             let js_device_cores = cx.number(get_cores(*device_id) as f64);
             let js_device_memory = cx.string(get_memory(*device_id).to_string());
+
+            let js_device_name;
+            if vendor.contains("AMD") || vendor.contains("Advanced Micro Devices") {
+                let device_name_amd = get_amd_name(*device_id);
+                let combined_name = format!("{} ({})", device_name_amd, device_name);
+                js_device_name = cx.string(&combined_name);
+            } else {
+                js_device_name = cx.string(&device_name);
+            }
+
             device_info.set(&mut cx, "id", js_device_id).unwrap();
             device_info.set(&mut cx, "name", js_device_name).unwrap();
             device_info.set(&mut cx, "vendor", js_device_vendor).unwrap();
@@ -61,6 +73,20 @@ fn get_platform_info(mut cx: FunctionContext) -> JsResult<JsArray> {
     }
 
     Ok(js_platform_infos)
+}
+
+const CL_DEVICE_BOARD_NAME_AMD: u32 = 0x4038;
+enum AmdDeviceInfo {
+    Name = CL_DEVICE_BOARD_NAME_AMD as isize,
+}
+
+fn get_amd_name(device: core::DeviceId) -> String {
+    let result = core::get_device_info_raw(device, AmdDeviceInfo::Name as u32).unwrap();
+
+    match util::bytes_into_string(result) {
+        Ok(s) => s,
+        _ => panic!("Unexpected error"),
+    }
 }
 
 fn get_cores(device: core::DeviceId) -> u32 {
