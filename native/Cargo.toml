@@ -1,6 +1,6 @@
 [package]
 name = "opencl-info"
-version = "0.2.2"
+version = "0.3.0"
 authors = ["Felix Brucker <felix@felixbrucker.com>"]
 license = "MIT"
 build = "build.rs"
