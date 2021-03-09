@@ -8,15 +8,10 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [ 12.x ]
-        os: [ ubuntu-latest, macos-latest ]
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
 
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Install ubuntu dependencies
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get -qq update
-          sudo apt-get install -y opencl-headers ocl-icd-opencl-dev
       - name: Checkout the repo
         uses: actions/checkout@v2
       - name: Set up Rust
@@ -27,6 +22,30 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Install ubuntu dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get -qq update
+          sudo apt-get install -y opencl-headers ocl-icd-opencl-dev
+      - name: Cache windows build dependencies
+        id: cache-windows-opencl-icd-loader
+        if: matrix.os == 'windows-latest'
+        uses: actions/cache@v2
+        with:
+          path: OpenCL-ICD-Loader/build/Release
+          key: ${{ runner.os }}-opencl-icd-loader
+      - name: Build windows build dependencies
+        if: matrix.os == 'windows-latest' && steps.cache-windows-opencl-icd-loader.outputs.cache-hit != 'true'
+        run: |
+          git clone --depth 1 https://github.com/KhronosGroup/OpenCL-ICD-Loader
+          cd OpenCL-ICD-Loader
+          git clone --depth=1 https://github.com/KhronosGroup/OpenCL-Headers inc/OpenCL-Headers
+          cmake -DOPENCL_ICD_LOADER_HEADERS_DIR=inc/OpenCL-Headers -Bbuild -Ax64
+          cd build
+          & "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" "/p:Configuration=Release" "/p:Platform=x64" "OpenCL-ICD-Loader.sln"
+      - name: Copy windows build dependencies
+        if: matrix.os == 'windows-latest'
+        run: cp "$($pwd.Path)/OpenCL-ICD-Loader/build/Release/OpenCL.lib" "C:\Rust\.rustup\toolchains\stable-x86_64-pc-windows-msvc\lib\rustlib\x86_64-pc-windows-msvc\lib"
       - name: yarn install
         run: yarn install
       - name: Package build archive
