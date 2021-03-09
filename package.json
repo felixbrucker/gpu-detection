@@ -1,6 +1,6 @@
 {
   "name": "opencl-info",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Allows to retrieve basic opencl info",
   "main": "lib/index.js",
   "exports": "./lib/index.js",
@@ -11,8 +11,8 @@
     "url": "git+https://github.com/felixbrucker/opencl-info.git"
   },
   "dependencies": {
-    "@mapbox/node-pre-gyp": "^1.0.1",
-    "neon-cli": "^0.7.1"
+    "neon-cli": "^0.7.1",
+    "node-pre-gyp": "^0.17.0"
   },
   "scripts": {
     "install": "npm run --silent install:download || npm run --silent build || exit 0",
